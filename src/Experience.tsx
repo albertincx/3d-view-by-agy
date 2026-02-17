@@ -1,6 +1,6 @@
-import { useEffect, useRef, useMemo } from 'react'
+import { useEffect, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls, PointerLockControls, useKeyboardControls, Environment } from '@react-three/drei'
+import { OrbitControls, PointerLockControls, useKeyboardControls } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface ExperienceProps {
@@ -8,7 +8,10 @@ interface ExperienceProps {
     config: any
 }
 
-const WallSegment = ({ start, end, thickness, height, color }: any) => {
+const WallSegment = ({ segment }: { segment: any }) => {
+    const { start, end, thickness, height, color } = segment
+
+    // Create vector instances
     const s = new THREE.Vector3(start[0], height / 2, start[1])
     const e = new THREE.Vector3(end[0], height / 2, end[1])
 
@@ -38,7 +41,8 @@ export function Experience({ isMobile, config }: ExperienceProps) {
     const direction = useRef(new THREE.Vector3())
     const lastTime = useRef(performance.now())
 
-    const { segments, floor } = config || { segments: [], floor: { color: '#ccc' } }
+    const { rooms, floor } = config || { rooms: [], floor: { color: '#ccc' } }
+    const safeRooms = rooms || (config.segments ? [{ position: [0, 0], segments: config.segments }] : [])
 
     useFrame(() => {
         if (isMobile) return
@@ -86,29 +90,26 @@ export function Experience({ isMobile, config }: ExperienceProps) {
                 <PointerLockControls ref={controlsRef} />
             )}
 
-            <ambientLight intensity={0.4} />
-            <pointLight position={[3, 3, 2]} intensity={0.8} castShadow shadow-bias={-0.001} />
-            <Environment preset="apartment" />
+            <ambientLight intensity={0.5} />
+            <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
 
             <group onClick={handleClick}>
                 {/* Floor */}
-                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3, 0, 2]} receiveShadow>
-                    <planeGeometry args={[15, 15]} />
-                    <meshStandardMaterial color={floor.color} />
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[5, -0.01, 5]} receiveShadow>
+                    <planeGeometry args={[40, 40]} />
+                    <meshStandardMaterial color={floor?.color || '#e5e5e5'} />
                 </mesh>
 
-                {/* Dynamic Wall Segments */}
-                {segments.map((segment: any, index: number) => (
-                    <WallSegment
-                        key={index}
-                        start={segment.start}
-                        end={segment.end}
-                        thickness={segment.thickness}
-                        height={segment.height}
-                        color={segment.color}
-                    />
-                ))}
+                <gridHelper args={[40, 40]} position={[5, 0, 5]} />
 
+                {/* Rooms */}
+                {safeRooms.map((room: any, roomIndex: number) => (
+                    <group key={room.id || roomIndex} position={[room.position[0], 0, room.position[1]]}>
+                        {room.segments.map((segment: any, i: number) => (
+                            <WallSegment key={i} segment={segment} />
+                        ))}
+                    </group>
+                ))}
             </group>
         </>
     )
