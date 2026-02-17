@@ -8,38 +8,24 @@ interface ExperienceProps {
     isMobile: boolean
 }
 
-// Helper to generate wall parts with a window hole
-const WallWithWindow = ({ width, height, thickness, windowConfig, color }: any) => {
-    const { width: wineWidth, height: winHeight, y: winY } = windowConfig;
+const WallSegment = ({ start, end, thickness, height, color }: any) => {
+    const s = new THREE.Vector3(start[0], height / 2, start[1])
+    const e = new THREE.Vector3(end[0], height / 2, end[1])
 
-    // Calculate wall segments
-    const topHeight = height - (winY + winHeight / 2);
-    const bottomHeight = winY - winHeight / 2;
-    const sideWidth = (width - wineWidth) / 2;
+    // Calculate length
+    const length = s.distanceTo(e)
+
+    // Calculate center position
+    const position = s.clone().add(e).multiplyScalar(0.5)
+
+    // Calculate rotation (Y-axis)
+    const angle = Math.atan2(e.z - s.z, e.x - s.x)
 
     return (
-        <group>
-            {/* Left */}
-            <mesh position={[-width / 2 + sideWidth / 2, 0, 0]} receiveShadow castShadow>
-                <boxGeometry args={[sideWidth, height, thickness]} />
-                <meshStandardMaterial color={color} />
-            </mesh>
-            {/* Right */}
-            <mesh position={[width / 2 - sideWidth / 2, 0, 0]} receiveShadow castShadow>
-                <boxGeometry args={[sideWidth, height, thickness]} />
-                <meshStandardMaterial color={color} />
-            </mesh>
-            {/* Top */}
-            <mesh position={[0, height / 2 - topHeight / 2, 0]} receiveShadow castShadow>
-                <boxGeometry args={[wineWidth, topHeight, thickness]} />
-                <meshStandardMaterial color={color} />
-            </mesh>
-            {/* Bottom */}
-            <mesh position={[0, -height / 2 + bottomHeight / 2, 0]} receiveShadow castShadow>
-                <boxGeometry args={[wineWidth, bottomHeight, thickness]} />
-                <meshStandardMaterial color={color} />
-            </mesh>
-        </group>
+        <mesh position={position} rotation={[0, -angle, 0]} castShadow receiveShadow>
+            <boxGeometry args={[length, height, thickness]} />
+            <meshStandardMaterial color={color} />
+        </mesh>
     )
 }
 
@@ -51,6 +37,8 @@ export function Experience({ isMobile }: ExperienceProps) {
     const velocity = useRef(new THREE.Vector3())
     const direction = useRef(new THREE.Vector3())
     const lastTime = useRef(performance.now())
+
+    const { segments, floor } = roomConfig
 
     useFrame(() => {
         if (isMobile) return
@@ -86,81 +74,40 @@ export function Experience({ isMobile }: ExperienceProps) {
     }
 
     useEffect(() => {
-        camera.position.set(0, 1.6, roomConfig.depth / 2 - 2)
+        // Start near the entrance (approx 1, 4)
+        camera.position.set(1, 1.6, 4)
     }, [])
-
-    const { width, depth, height, walls, floor, window: winConfig } = roomConfig
 
     return (
         <>
             {isMobile ? (
-                <OrbitControls makeDefault target={[0, 1, 0]} />
+                <OrbitControls makeDefault target={[2, 1, 2]} />
             ) : (
                 <PointerLockControls ref={controlsRef} />
             )}
 
             <ambientLight intensity={0.4} />
-            <pointLight position={[0, height - 0.5, 0]} intensity={0.8} castShadow shadow-bias={-0.001} />
+            <pointLight position={[3, 3, 2]} intensity={0.8} castShadow shadow-bias={-0.001} />
             <Environment preset="apartment" />
 
             <group onClick={handleClick}>
                 {/* Floor */}
-                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-                    <planeGeometry args={[width, depth]} />
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3, 0, 2]} receiveShadow>
+                    <planeGeometry args={[15, 15]} />
                     <meshStandardMaterial color={floor.color} />
                 </mesh>
 
-                {/* Walls Construction */}
-
-                {/* Back Wall (North) - Negative Z */}
-                <group position={[0, height / 2, -depth / 2]}>
-                    {winConfig.wall === 'back' ? (
-                        <WallWithWindow
-                            width={width}
-                            height={height}
-                            thickness={walls.thickness}
-                            windowConfig={winConfig}
-                            color={walls.color}
-                        />
-                    ) : (
-                        <mesh position={[0, 0, 0]} receiveShadow castShadow>
-                            <boxGeometry args={[width, height, walls.thickness]} />
-                            <meshStandardMaterial color={walls.color} />
-                        </mesh>
-                    )}
-                </group>
-
-                {/* Front Wall (South) - Positive Z */}
-                <group position={[0, height / 2, depth / 2]}>
-                    <mesh position={[0, 0, 0]} receiveShadow castShadow>
-                        <boxGeometry args={[width, height, walls.thickness]} />
-                        <meshStandardMaterial color={walls.color} />
-                    </mesh>
-                </group>
-
-                {/* Left Wall (West) - Negative X */}
-                <group position={[-width / 2, height / 2, 0]} rotation={[0, Math.PI / 2, 0]}>
-                    <mesh position={[0, 0, 0]} receiveShadow castShadow>
-                        <boxGeometry args={[depth, height, walls.thickness]} />
-                        <meshStandardMaterial color="#d4d4d4" />
-                    </mesh>
-                </group>
-
-                {/* Right Wall (East) - Positive X */}
-                <group position={[width / 2, height / 2, 0]} rotation={[0, Math.PI / 2, 0]}>
-                    <mesh position={[0, 0, 0]} receiveShadow castShadow>
-                        <boxGeometry args={[depth, height, walls.thickness]} />
-                        <meshStandardMaterial color="#d4d4d4" />
-                    </mesh>
-                </group>
-
-                {/* Furniture Placeholders (kept for reference, adjusted positions slightly) */}
-                <group position={[-width / 4, 0.3, -depth / 4]}>
-                    <mesh castShadow receiveShadow>
-                        <boxGeometry args={[2.5, 0.6, 4]} />
-                        <meshStandardMaterial color="#3b82f6" />
-                    </mesh>
-                </group>
+                {/* Dynamic Wall Segments */}
+                {segments.map((segment: any, index: number) => (
+                    <WallSegment
+                        key={index}
+                        start={segment.start}
+                        end={segment.end}
+                        thickness={segment.thickness}
+                        height={segment.height}
+                        color={segment.color}
+                    />
+                ))}
 
             </group>
         </>

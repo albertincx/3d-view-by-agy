@@ -1,18 +1,233 @@
 {
+  "segments": [
+    {
+      "start": [
+        0,
+        0
+      ],
+      "end": [
+        2.2,
+        0
+      ],
+      "thickness": 0.2,
+      "height": 3.0,
+      "color": "#f0f0f0",
+      "holes": []
+    },
+    {
+      "start": [
+        0,
+        0
+      ],
+      "end": [
+        0,
+        2.0
+      ],
+      "thickness": 0.2,
+      "height": 3.0,
+      "color": "#f0f0f0",
+      "holes": []
+    },
+    {
+      "start": [
+        0,
+        2.0
+      ],
+      "end": [
+        0.7,
+        2.0
+      ],
+      "thickness": 0.2,
+      "height": 3.0,
+      "color": "#f0f0f0",
+      "holes": []
+    },
+    {
+      "start": [
+        1.5,
+        2.0
+      ],
+      "end": [
+        2.2,
+        2.0
+      ],
+      "thickness": 0.2,
+      "height": 3.0,
+      "color": "#f0f0f0",
+      "holes": []
+    },
+    {
+      "start": [
+        2.2,
+        0
+      ],
+      "end": [
+        2.2,
+        2.0
+      ],
+      "thickness": 0.2,
+      "height": 3.0,
+      "color": "#f0f0f0",
+      "holes": []
+    },
+    {
+      "start": [
+        0,
+        2.0
+      ],
+      "end": [
+        0,
+        5.0
+      ],
+      "thickness": 0.2,
+      "height": 3.0,
+      "color": "#f0f0f0",
+      "holes": []
+    },
+    {
+      "start": [
+        0,
+        5.0
+      ],
+      "end": [
+        2.2,
+        5.0
+      ],
+      "thickness": 0.2,
+      "height": 3.0,
+      "color": "#f0f0f0",
+      "holes": []
+    },
+    {
+      "start": [
+        2.2,
+        2.0
+      ],
+      "end": [
+        2.2,
+        2.5
+      ],
+      "thickness": 0.2,
+      "height": 3.0,
+      "color": "#f0f0f0",
+      "holes": []
+    },
+    {
+      "start": [
+        2.2,
+        3.5
+      ],
+      "end": [
+        2.2,
+        5.0
+      ],
+      "thickness": 0.2,
+      "height": 3.0,
+      "color": "#f0f0f0",
+      "holes": []
+    },
+    {
+      "start": [
+        2.2,
+        0
+      ],
+      "end": [
+        6.0,
+        0
+      ],
+      "thickness": 0.2,
+      "height": 3.0,
+      "color": "#f0f0f0",
+      "holes": []
+    },
+    {
+      "start": [
+        6.0,
+        0
+      ],
+      "end": [
+        6.0,
+        1.0
+      ],
+      "thickness": 0.2,
+      "height": 3.0,
+      "color": "#f0f0f0",
+      "holes": []
+    },
+    {
+      "start": [
+        6.0,
+        2.5
+      ],
+      "end": [
+        6.0,
+        4.5
+      ],
+      "thickness": 0.2,
+      "height": 3.0,
+      "color": "#f0f0f0",
+      "holes": []
+    },
+    {
+      "start": [
+        2.2,
+        4.5
+      ],
+      "end": [
+        6.0,
+        4.5
+      ],
+      "thickness": 0.2,
+      "height": 3.0,
+      "color": "#f0f0f0",
+      "holes": []
+    },
+    {
+      "start": [
+        6.0,
+        1.0
+      ],
+      "end": [
+        7.5,
+        1.0
+      ],
+      "thickness": 0.2,
+      "height": 3.0,
+      "color": "#f0f0f0",
+      "holes": []
+    },
+    {
+      "start": [
+        7.5,
+        1.0
+      ],
+      "end": [
+        7.5,
+        3.5
+      ],
+      "thickness": 0.2,
+      "height": 3.0,
+      "color": "#f0f0f0",
+      "holes": []
+    },
+    {
+      "start": [
+        7.5,
+        3.5
+      ],
+      "end": [
+        6.0,
+        3.5
+      ],
+      "thickness": 0.2,
+      "height": 3.0,
+      "color": "#f0f0f0",
+      "holes": []
+    }
+  ],
+  "floor": {
     "width": 10,
     "depth": 10,
-    "height": 3,
-    "walls": {
-        "thickness": 0.2,
-        "color": "#f0f0f0"
-    },
-    "floor": {
-        "color": "#e5e5e5"
-    },
-    "window": {
-        "wall": "back",
-        "width": 4,
-        "height": 1.5,
-        "y": 1.5
-    }
+    "color": "#e5e5e5"
+  }
 }
