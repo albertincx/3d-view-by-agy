@@ -108,7 +108,12 @@ export function Sidebar({ config, setConfig }: SidebarProps) {
     }
 
     return (
-        <div className="absolute top-0 right-0 h-full w-96 bg-gray-900 border-l border-gray-700 z-50 flex flex-col shadow-xl overflow-hidden">
+        <div
+            className="absolute top-0 right-0 h-full w-96 bg-gray-900 border-l border-gray-700 z-50 flex flex-col shadow-xl overflow-hidden"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+        >
             <div className="flex justify-between items-center p-4 border-b border-gray-700 bg-gray-800">
                 <h2 className="text-white font-bold">Room Editor</h2>
                 <div className="flex gap-2">
