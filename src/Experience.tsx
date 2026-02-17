@@ -2,10 +2,10 @@ import { useEffect, useRef, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, PointerLockControls, useKeyboardControls, Environment } from '@react-three/drei'
 import * as THREE from 'three'
-import roomConfig from './room.json'
 
 interface ExperienceProps {
     isMobile: boolean
+    config: any
 }
 
 const WallSegment = ({ start, end, thickness, height, color }: any) => {
@@ -29,7 +29,7 @@ const WallSegment = ({ start, end, thickness, height, color }: any) => {
     )
 }
 
-export function Experience({ isMobile }: ExperienceProps) {
+export function Experience({ isMobile, config }: ExperienceProps) {
     const { camera } = useThree()
     const [sub, get] = useKeyboardControls()
     const controlsRef = useRef<any>(null)
@@ -38,7 +38,7 @@ export function Experience({ isMobile }: ExperienceProps) {
     const direction = useRef(new THREE.Vector3())
     const lastTime = useRef(performance.now())
 
-    const { segments, floor } = roomConfig
+    const { segments, floor } = config || { segments: [], floor: { color: '#ccc' } }
 
     useFrame(() => {
         if (isMobile) return

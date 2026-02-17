@@ -2,10 +2,13 @@ import { useRef, useEffect, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { KeyboardControls, useKeyboardControls } from '@react-three/drei'
 import { Experience } from './Experience'
+import { Sidebar } from './Sidebar'
 import { Suspense } from 'react'
+import initialRoomConfig from './room.json'
 
 export default function App() {
     const [isMobile, setIsMobile] = useState(false)
+    const [config, setConfig] = useState(initialRoomConfig)
 
     useEffect(() => {
         const checkMobile = () => {
@@ -26,7 +29,7 @@ export default function App() {
     ]
 
     return (
-        <div className="h-screen w-screen bg-neutral-900 text-white overflow-hidden relative">
+        <div className="h-screen w-screen bg-neutral-900 text-white overflow-hidden relative flex">
             <div className="absolute top-4 left-4 z-10 pointer-events-none">
                 <h1 className="text-2xl font-bold bg-black/50 p-2 rounded backdrop-blur-sm">
                     3D Viewer
@@ -36,11 +39,13 @@ export default function App() {
                 </p>
             </div>
 
+            <Sidebar config={config} setConfig={setConfig} />
+
             <Canvas shadows camera={{ position: [0, 2, 5], fov: 50 }}>
                 <color attach="background" args={['#171717']} />
                 <KeyboardControls map={keyboardMap}>
                     <Suspense fallback={null}>
-                        <Experience isMobile={isMobile} />
+                        <Experience isMobile={isMobile} config={config} />
                     </Suspense>
                 </KeyboardControls>
             </Canvas>
