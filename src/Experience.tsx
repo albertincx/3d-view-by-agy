@@ -57,7 +57,7 @@ export function Experience({ isMobile, config }: ExperienceProps) {
         velocity.current.z -= velocity.current.z * 10.0 * safeDelta
 
         direction.current.z = Number(forward) - Number(backward)
-        direction.current.x = Number(left) - Number(right)
+        direction.current.x = Number(right) - Number(left)
         direction.current.normalize()
 
         if (forward || backward) velocity.current.z -= direction.current.z * 400.0 * safeDelta * (run ? 2 : 1)
@@ -70,12 +70,6 @@ export function Experience({ isMobile, config }: ExperienceProps) {
 
         lastTime.current = time
     })
-
-    const handleClick = () => {
-        if (!isMobile && controlsRef.current) {
-            controlsRef.current.lock();
-        }
-    }
 
     useEffect(() => {
         // Start near the entrance (approx 1, 4)
@@ -93,7 +87,7 @@ export function Experience({ isMobile, config }: ExperienceProps) {
             <ambientLight intensity={0.5} />
             <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
 
-            <group onClick={handleClick}>
+            <group>
                 {/* Floor */}
                 <mesh rotation={[-Math.PI / 2, 0, 0]} position={[5, -0.01, 5]} receiveShadow>
                     <planeGeometry args={[40, 40]} />
