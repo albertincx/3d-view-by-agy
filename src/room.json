@@ -1,0 +1,18 @@
+{
+    "width": 10,
+    "depth": 10,
+    "height": 3,
+    "walls": {
+        "thickness": 0.2,
+        "color": "#f0f0f0"
+    },
+    "floor": {
+        "color": "#e5e5e5"
+    },
+    "window": {
+        "wall": "back",
+        "width": 4,
+        "height": 1.5,
+        "y": 1.5
+    }
+}
