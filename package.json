@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "VITE_TEST_APP=1 VITE_USER_NAME=WeelBot VITE_APP_URL=http://localhost:8000 vite --host --force"
+    "dev": "VITE_TEST_APP=1 VITE_USER_NAME=WeelBot VITE_APP_URL=http://localhost:8000 vite --host --force",
+    "buildStatic": "tsc && vite build"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

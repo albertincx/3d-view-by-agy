@@ -1,14 +1,153 @@
-import { useRef, useEffect, useState } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { KeyboardControls, useKeyboardControls } from '@react-three/drei'
-import { Experience } from './Experience'
-import { Sidebar } from './Sidebar'
-import { Suspense } from 'react'
+import {useRef, useEffect, useState, useCallback} from 'react'
+import {Canvas, useFrame, useThree} from '@react-three/fiber'
+import {KeyboardControls, useKeyboardControls} from '@react-three/drei'
+import {Experience} from './Experience'
+import {Sidebar} from './Sidebar'
+import {Suspense} from 'react'
 import initialRoomConfig from './room.json'
+
+// Virtual joystick for mobile
+function Joystick({onMove}: { onMove: (x: number, y: number) => void }) {
+    const joystickRef = useRef<HTMLDivElement>(null)
+    const [active, setActive] = useState(false)
+    const [position, setPosition] = useState({x: 0, y: 0})
+    const centerRef = useRef({x: 0, y: 0})
+    const maxRadius = 50
+
+    const handleStart = useCallback((clientX: number, clientY: number) => {
+        setActive(true)
+        if (joystickRef.current) {
+            const rect = joystickRef.current.getBoundingClientRect()
+            centerRef.current = {
+                x: rect.left + rect.width / 2,
+                y: rect.top + rect.height / 2
+            }
+            handleMove(clientX, clientY)
+        }
+    }, [])
+
+    const handleMove = useCallback((clientX: number, clientY: number) => {
+        if (!active) return
+
+        const dx = clientX - centerRef.current.x
+        const dy = clientY - centerRef.current.y
+        const distance = Math.sqrt(dx * dx + dy * dy)
+        const angle = Math.atan2(dy, dx)
+
+        const clampedDistance = Math.min(distance, maxRadius)
+        const newX = Math.cos(angle) * clampedDistance
+        const newY = Math.sin(angle) * clampedDistance
+
+        setPosition({x: newX, y: newY})
+        onMove(newX / maxRadius, -newY / maxRadius)
+    }, [active, onMove])
+
+    const handleEnd = useCallback(() => {
+        setActive(false)
+        setPosition({x: 0, y: 0})
+        onMove(0, 0)
+    }, [onMove])
+
+    useEffect(() => {
+        const handleTouchMove = (e: TouchEvent) => {
+            if (active && e.touches[0]) {
+                e.preventDefault()
+                handleMove(e.touches[0].clientX, e.touches[0].clientY)
+            }
+        }
+        const handleTouchEnd = () => handleEnd()
+
+        document.addEventListener('touchmove', handleTouchMove, {passive: false})
+        document.addEventListener('touchend', handleTouchEnd)
+
+        return () => {
+            document.removeEventListener('touchmove', handleTouchMove)
+            document.removeEventListener('touchend', handleTouchEnd)
+        }
+    }, [active, handleMove, handleEnd])
+
+    return (
+        <div
+            ref={joystickRef}
+            className="absolute bottom-8 left-8 w-28 h-28 bg-white/20 rounded-full backdrop-blur-sm touch-none"
+            onTouchStart={(e) => handleStart(e.touches[0].clientX, e.touches[0].clientY)}
+        >
+            <div
+                className="absolute w-12 h-12 bg-white/60 rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+                style={{
+                    transform: `translate(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px))`
+                }}
+            />
+        </div>
+    )
+}
+
+// WASD buttons for mobile
+function MobileWASD({
+                        onKeyPress
+                    }: {
+    onKeyPress: (forward: number, backward: number, left: number, right: number) => void
+}) {
+    const [keys, setKeys] = useState({forward: false, backward: false, left: false, right: false})
+
+    const updateKeys = useCallback((key: string, pressed: boolean) => {
+        setKeys(prev => {
+            const newKeys = {...prev, [key]: pressed}
+            onKeyPress(
+                newKeys.forward ? 1 : 0,
+                newKeys.backward ? 1 : 0,
+                newKeys.left ? 1 : 0,
+                newKeys.right ? 1 : 0
+            )
+            return newKeys
+        })
+    }, [onKeyPress])
+
+    const buttonClass = "w-14 h-14 bg-white/30 backdrop-blur-sm rounded-lg flex items-center justify-center text-white font-bold text-xl active:bg-white/50 select-none touch-none"
+
+    return (
+        <div className="absolute bottom-8 right-8 flex flex-col gap-2">
+            <div className="flex justify-center">
+                <button
+                    className={buttonClass}
+                    onTouchStart={() => updateKeys('forward', true)}
+                    onTouchEnd={() => updateKeys('forward', false)}
+                >
+                    ↑
+                </button>
+            </div>
+            <div className="flex gap-2">
+                <button
+                    className={buttonClass}
+                    onTouchStart={() => updateKeys('left', true)}
+                    onTouchEnd={() => updateKeys('left', false)}
+                >
+                    ←
+                </button>
+                <button
+                    className={buttonClass}
+                    onTouchStart={() => updateKeys('backward', true)}
+                    onTouchEnd={() => updateKeys('backward', false)}
+                >
+                    ↓
+                </button>
+                <button
+                    className={buttonClass}
+                    onTouchStart={() => updateKeys('right', true)}
+                    onTouchEnd={() => updateKeys('right', false)}
+                >
+                    →
+                </button>
+            </div>
+        </div>
+    )
+}
 
 export default function App() {
     const [isMobile, setIsMobile] = useState(false)
     const [config, setConfig] = useState(initialRoomConfig)
+    const [mobileInput, setMobileInput] = useState({x: 0, y: 0})
+    const [mobileKeys, setMobileKeys] = useState({forward: 0, backward: 0, left: 0, right: 0})
 
     useEffect(() => {
         const checkMobile = () => {
@@ -20,12 +159,12 @@ export default function App() {
     }, [])
 
     const keyboardMap = [
-        { name: 'forward', keys: ['ArrowUp', 'w', 'W'] },
-        { name: 'backward', keys: ['ArrowDown', 's', 'S'] },
-        { name: 'left', keys: ['ArrowLeft', 'a', 'A'] },
-        { name: 'right', keys: ['ArrowRight', 'd', 'D'] },
-        { name: 'jump', keys: ['Space'] },
-        { name: 'run', keys: ['Shift'] },
+        {name: 'forward', keys: ['ArrowUp', 'w', 'W']},
+        {name: 'backward', keys: ['ArrowDown', 's', 'S']},
+        {name: 'left', keys: ['ArrowLeft', 'a', 'A']},
+        {name: 'right', keys: ['ArrowRight', 'd', 'D']},
+        {name: 'jump', keys: ['Space']},
+        {name: 'run', keys: ['Shift']},
     ]
 
     return (
@@ -35,20 +174,34 @@ export default function App() {
                     3D Viewer
                 </h1>
                 <p className="text-sm opacity-70 mt-1 bg-black/50 p-2 rounded backdrop-blur-sm">
-                    {isMobile ? 'Touch to zoom/pan' : 'WASD to walk, Mouse to look'}
+                    {isMobile ? 'Use joystick or WASD to move' : 'WASD to walk, Mouse to look'}
                 </p>
             </div>
 
-            <Sidebar config={config} setConfig={setConfig} />
+            <Sidebar config={config} setConfig={setConfig}/>
 
-            <Canvas shadows camera={{ position: [0, 2, 5], fov: 50 }}>
-                <color attach="background" args={['#171717']} />
+            <Canvas shadows camera={{position: [0, 2, 5], fov: 50}}>
+                <color attach="background" args={['#171717']}/>
                 <KeyboardControls map={keyboardMap}>
                     <Suspense fallback={null}>
-                        <Experience isMobile={isMobile} config={config} />
+                        <Experience
+                            isMobile={isMobile}
+                            config={config}
+                            mobileInput={mobileInput}
+                            mobileKeys={mobileKeys}
+                        />
                     </Suspense>
                 </KeyboardControls>
             </Canvas>
+
+            {/* Mobile controls */}
+            {isMobile && (
+                <>
+                    <Joystick onMove={(x, y) => setMobileInput({x, y})}/>
+                    <MobileWASD
+                        onKeyPress={(f, b, l, r) => setMobileKeys({forward: f, backward: b, left: l, right: r})}/>
+                </>
+            )}
         </div>
     )
 }

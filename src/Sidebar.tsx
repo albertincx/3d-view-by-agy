@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react'
-import { Joystick } from './components/Joystick'
+import {useState, useEffect} from 'react'
+import {Joystick} from './components/Joystick'
 
 interface SidebarProps {
     config: any
     setConfig: (config: any) => void
 }
 
-export function Sidebar({ config, setConfig }: SidebarProps) {
+export function Sidebar({config, setConfig}: SidebarProps) {
     const [isOpen, setIsOpen] = useState(true)
     const [activeTab, setActiveTab] = useState<'ui' | 'json'>('ui')
     const [jsonText, setJsonText] = useState(JSON.stringify(config, null, 2))
@@ -19,7 +19,7 @@ export function Sidebar({ config, setConfig }: SidebarProps) {
         if (!config.rooms && config.segments) {
             setConfig({
                 ...config,
-                rooms: [{ id: 'room-1', name: 'Main Room', position: [0, 0], segments: config.segments }],
+                rooms: [{id: 'room-1', name: 'Main Room', position: [0, 0], segments: config.segments}],
                 segments: undefined
             })
         }
@@ -46,7 +46,7 @@ export function Sidebar({ config, setConfig }: SidebarProps) {
     }
 
     const updateFloorColor = (color: string) => {
-        setConfig({ ...config, floor: { ...config.floor, color } })
+        setConfig({...config, floor: {...config.floor, color}})
     }
 
     const addRoom = () => {
@@ -55,20 +55,20 @@ export function Sidebar({ config, setConfig }: SidebarProps) {
             name: `Room ${rooms.length + 1}`,
             position: [0, 0],
             segments: [
-                { start: [0, 0], end: [3, 0], thickness: 0.2, height: 3, color: '#cccccc' },
-                { start: [3, 0], end: [3, 3], thickness: 0.2, height: 3, color: '#cccccc' },
-                { start: [3, 3], end: [0, 3], thickness: 0.2, height: 3, color: '#cccccc' },
-                { start: [0, 3], end: [0, 0], thickness: 0.2, height: 3, color: '#cccccc' }
+                {start: [0, 0], end: [3, 0], thickness: 0.2, height: 3, color: '#cccccc'},
+                {start: [3, 0], end: [3, 3], thickness: 0.2, height: 3, color: '#cccccc'},
+                {start: [3, 3], end: [0, 3], thickness: 0.2, height: 3, color: '#cccccc'},
+                {start: [0, 3], end: [0, 0], thickness: 0.2, height: 3, color: '#cccccc'}
             ]
         }
-        setConfig({ ...config, rooms: [...rooms, newRoom] })
+        setConfig({...config, rooms: [...rooms, newRoom]})
         setExpandedRoomId(newRoom.id)
     }
 
     const updateRoomPosition = (roomIndex: number, x: number, z: number) => {
         const newRooms = [...rooms]
         newRooms[roomIndex].position = [x, z]
-        setConfig({ ...config, rooms: newRooms })
+        setConfig({...config, rooms: newRooms})
     }
 
     const updateSegment = (roomIndex: number, segmentIndex: number, field: string, value: any) => {
@@ -83,7 +83,7 @@ export function Sidebar({ config, setConfig }: SidebarProps) {
         }
 
         newRooms[roomIndex].segments = newSegments
-        setConfig({ ...config, rooms: newRooms })
+        setConfig({...config, rooms: newRooms})
     }
 
     const exportJson = () => {
@@ -94,6 +94,23 @@ export function Sidebar({ config, setConfig }: SidebarProps) {
         document.body.appendChild(downloadAnchorNode);
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
+    }
+
+    const importJson = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const parsed = JSON.parse(event.target?.result as string);
+                setConfig(parsed);
+                setError(null);
+            } catch (err: any) {
+                setError(err.message);
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
     }
 
     if (!isOpen) {
@@ -117,7 +134,18 @@ export function Sidebar({ config, setConfig }: SidebarProps) {
             <div className="flex justify-between items-center p-4 border-b border-gray-700 bg-gray-800">
                 <h2 className="text-white font-bold">Room Editor</h2>
                 <div className="flex gap-2">
-                    <button onClick={exportJson} className="bg-blue-600 hover:bg-blue-700 text-xs px-2 py-1 rounded text-white">
+                    <label
+                        className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 rounded text-white cursor-pointer">
+                        Import
+                        <input
+                            type="file"
+                            accept=".json"
+                            onChange={importJson}
+                            className="hidden"
+                        />
+                    </label>
+                    <button onClick={exportJson}
+                            className="bg-blue-600 hover:bg-blue-700 text-xs px-2 py-1 rounded text-white">
                         Export
                     </button>
                     <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-white">
@@ -160,7 +188,8 @@ export function Sidebar({ config, setConfig }: SidebarProps) {
                     <div className="p-4 space-y-6">
                         {/* Global Settings */}
                         <div className="space-y-4">
-                            <h3 className="text-xs uppercase font-bold text-gray-500 tracking-wider">Global Settings</h3>
+                            <h3 className="text-xs uppercase font-bold text-gray-500 tracking-wider">Global
+                                Settings</h3>
                             <div className="flex items-center justify-between">
                                 <label className="text-sm text-gray-300">Floor Color</label>
                                 <input
@@ -180,15 +209,19 @@ export function Sidebar({ config, setConfig }: SidebarProps) {
 
                         {/* Rooms List */}
                         <div className="space-y-4">
-                            <h3 className="text-xs uppercase font-bold text-gray-500 tracking-wider">Rooms ({rooms.length})</h3>
+                            <h3 className="text-xs uppercase font-bold text-gray-500 tracking-wider">Rooms
+                                ({rooms.length})</h3>
                             {rooms.map((room: any, roomIndex: number) => (
-                                <div key={room.id || roomIndex} className="bg-gray-800 rounded border border-gray-700 overflow-hidden">
+                                <div key={room.id || roomIndex}
+                                     className="bg-gray-800 rounded border border-gray-700 overflow-hidden">
                                     <button
                                         className="w-full p-3 flex justify-between items-center text-left bg-gray-800 hover:bg-gray-750 border-b border-gray-700"
                                         onClick={() => setExpandedRoomId(expandedRoomId === room.id ? null : room.id)}
                                     >
-                                        <span className="text-sm font-bold text-gray-200">{room.name || `Room ${roomIndex + 1}`}</span>
-                                        <span className="text-gray-500 text-xs">{expandedRoomId === room.id ? '▲' : '▼'}</span>
+                                        <span
+                                            className="text-sm font-bold text-gray-200">{room.name || `Room ${roomIndex + 1}`}</span>
+                                        <span
+                                            className="text-gray-500 text-xs">{expandedRoomId === room.id ? '▲' : '▼'}</span>
                                     </button>
 
                                     {expandedRoomId === room.id && (
@@ -208,22 +241,29 @@ export function Sidebar({ config, setConfig }: SidebarProps) {
                                                 const isExpanded = expandedSegmentIndex === segmentId
 
                                                 return (
-                                                    <div key={i} className="bg-gray-800 rounded border border-gray-700 overflow-hidden">
+                                                    <div key={i}
+                                                         className="bg-gray-800 rounded border border-gray-700 overflow-hidden">
                                                         <button
                                                             className="w-full p-2 flex justify-between items-center text-left bg-gray-800 hover:bg-gray-750"
                                                             onClick={() => setExpandedSegmentIndex(isExpanded ? null : segmentId)}
                                                         >
                                                             <div className="flex items-center gap-2">
-                                                                <span className="text-xs font-bold text-gray-400">Wall #{i + 1}</span>
-                                                                <div className="w-3 h-3 rounded-full border border-gray-600" style={{ backgroundColor: segment.color }} />
+                                                                <span
+                                                                    className="text-xs font-bold text-gray-400">Wall #{i + 1}</span>
+                                                                <div
+                                                                    className="w-3 h-3 rounded-full border border-gray-600"
+                                                                    style={{backgroundColor: segment.color}}/>
                                                             </div>
-                                                            <span className="text-gray-500 text-[10px]">{isExpanded ? '▲' : '▼'}</span>
+                                                            <span
+                                                                className="text-gray-500 text-[10px]">{isExpanded ? '▲' : '▼'}</span>
                                                         </button>
 
                                                         {isExpanded && (
-                                                            <div className="p-2 border-t border-gray-700 space-y-3 bg-gray-900/50">
+                                                            <div
+                                                                className="p-2 border-t border-gray-700 space-y-3 bg-gray-900/50">
                                                                 <div className="flex justify-between items-center">
-                                                                    <label className="text-[10px] text-gray-500">Color</label>
+                                                                    <label
+                                                                        className="text-[10px] text-gray-500">Color</label>
                                                                     <input
                                                                         type="color"
                                                                         value={segment.color}
@@ -238,13 +278,18 @@ export function Sidebar({ config, setConfig }: SidebarProps) {
                                                                         const val = idx < 2 ? segment.start[idx] : segment.end[idx - 2]
                                                                         return (
                                                                             <div key={label}>
-                                                                                <div className="flex justify-between mb-1">
-                                                                                    <label className="text-[10px] text-gray-500">{label}</label>
-                                                                                    <span className="text-[10px] text-gray-400">{val.toFixed(1)}</span>
+                                                                                <div
+                                                                                    className="flex justify-between mb-1">
+                                                                                    <label
+                                                                                        className="text-[10px] text-gray-500">{label}</label>
+                                                                                    <span
+                                                                                        className="text-[10px] text-gray-400">{val.toFixed(1)}</span>
                                                                                 </div>
-                                                                                <div className="flex gap-2 items-center">
+                                                                                <div
+                                                                                    className="flex gap-2 items-center">
                                                                                     <input
-                                                                                        type="range" min="-10" max="20" step="0.1"
+                                                                                        type="range" min="-10" max="20"
+                                                                                        step="0.1"
                                                                                         value={val}
                                                                                         onChange={(e) => updateSegment(roomIndex, i, field, e.target.value)}
                                                                                         className="flex-1"
