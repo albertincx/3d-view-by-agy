@@ -4,10 +4,11 @@ import {Joystick} from './components/Joystick'
 interface SidebarProps {
     config: any
     setConfig: (config: any) => void
+    isOpen: boolean
+    setIsOpen: (open: boolean) => void
 }
 
-export function Sidebar({config, setConfig}: SidebarProps) {
-    const [isOpen, setIsOpen] = useState(true)
+export function Sidebar({config, setConfig, isOpen, setIsOpen}: SidebarProps) {
     const [activeTab, setActiveTab] = useState<'ui' | 'json'>('ui')
     const [jsonText, setJsonText] = useState(JSON.stringify(config, null, 2))
     const [error, setError] = useState<string | null>(null)

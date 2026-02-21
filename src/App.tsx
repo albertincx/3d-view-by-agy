@@ -1,9 +1,8 @@
-import {useRef, useEffect, useState, useCallback} from 'react'
-import {Canvas, useFrame, useThree} from '@react-three/fiber'
-import {KeyboardControls, useKeyboardControls} from '@react-three/drei'
+import {Suspense, useCallback, useEffect, useRef, useState} from 'react'
+import {Canvas} from '@react-three/fiber'
+import {KeyboardControls} from '@react-three/drei'
 import {Experience} from './Experience'
 import {Sidebar} from './Sidebar'
-import {Suspense} from 'react'
 import initialRoomConfig from './room.json'
 
 // Virtual joystick for mobile
@@ -148,6 +147,7 @@ export default function App() {
     const [config, setConfig] = useState(initialRoomConfig)
     const [mobileInput, setMobileInput] = useState({x: 0, y: 0})
     const [mobileKeys, setMobileKeys] = useState({forward: 0, backward: 0, left: 0, right: 0})
+    const [sidebarOpen, setSidebarOpen] = useState(true)
     const canvasRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -186,10 +186,11 @@ export default function App() {
                 </p>
             </div>
 
-            <Sidebar config={config} setConfig={setConfig}/>
+            <Sidebar config={config} setConfig={setConfig} isOpen={sidebarOpen} setIsOpen={setSidebarOpen}/>
 
             <div ref={canvasRef} className="flex-1" tabIndex={-1}>
-                <Canvas shadows camera={{position: [0, 2, 5], fov: 50}} tabIndex={1} style={{outline: 'none'}} autoFocus>
+                <Canvas shadows camera={{position: [0, 2, 5], fov: 50}} tabIndex={1} style={{outline: 'none'}}
+                        autoFocus>
                     <color attach="background" args={['#171717']}/>
                     <KeyboardControls map={keyboardMap}>
                         <Suspense fallback={null}>
@@ -198,6 +199,7 @@ export default function App() {
                                 config={config}
                                 mobileInput={mobileInput}
                                 mobileKeys={mobileKeys}
+                                sidebarOpen={sidebarOpen}
                             />
                         </Suspense>
                     </KeyboardControls>

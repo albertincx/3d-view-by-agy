@@ -8,6 +8,7 @@ interface ExperienceProps {
     config: any
     mobileInput: { x: number; y: number }
     mobileKeys: { forward: number; backward: number; left: number; right: number }
+    sidebarOpen: boolean
 }
 
 const WallSegment = ({segment}: { segment: any }) => {
@@ -76,7 +77,7 @@ const Table = ({table}: { table: any }) => {
     )
 }
 
-export function Experience({isMobile, config, mobileInput, mobileKeys}: ExperienceProps) {
+export function Experience({isMobile, config, mobileInput, mobileKeys, sidebarOpen}: ExperienceProps) {
     const {camera} = useThree()
     const [sub, get] = useKeyboardControls()
     const controlsRef = useRef<any>(null)
@@ -108,26 +109,28 @@ export function Experience({isMobile, config, mobileInput, mobileKeys}: Experien
             camera.position.x += moveX * 0.1
             camera.position.z += moveZ * 0.1
         } else {
-            // Use keyboard controls (WASD)
-            const {forward, backward, left, right, run} = get()
-            
-            velocity.current.x -= velocity.current.x * 10.0 * safeDelta
-            velocity.current.z -= velocity.current.z * 10.0 * safeDelta
+            // Use keyboard controls (WASD) - disabled when sidebar is open
+            if (!sidebarOpen) {
+                const {forward, backward, left, right, run} = get()
 
-            direction.current.z = Number(forward) - Number(backward)
-            direction.current.x = Number(right) - Number(left)
-            direction.current.normalize()
+                velocity.current.x -= velocity.current.x * 10.0 * safeDelta
+                velocity.current.z -= velocity.current.z * 10.0 * safeDelta
 
-            if (forward || backward) velocity.current.z -= direction.current.z * 400.0 * safeDelta * (run ? 2 : 1)
-            if (left || right) velocity.current.x -= direction.current.x * 400.0 * safeDelta * (run ? 2 : 1)
+                direction.current.z = Number(forward) - Number(backward)
+                direction.current.x = Number(right) - Number(left)
+                direction.current.normalize()
 
-            if (controlsRef.current?.isLocked) {
-                controlsRef.current.moveRight(-velocity.current.x * safeDelta * 0.05)
-                controlsRef.current.moveForward(-velocity.current.z * safeDelta * 0.05)
-            } else {
-                // Allow WASD movement even without pointer lock
-                camera.position.x += -velocity.current.x * safeDelta * 0.05
-                camera.position.z += -velocity.current.z * safeDelta * 0.05
+                if (forward || backward) velocity.current.z -= direction.current.z * 400.0 * safeDelta * (run ? 2 : 1)
+                if (left || right) velocity.current.x -= direction.current.x * 400.0 * safeDelta * (run ? 2 : 1)
+
+                if (controlsRef.current?.isLocked) {
+                    controlsRef.current.moveRight(-velocity.current.x * safeDelta * 0.05)
+                    controlsRef.current.moveForward(-velocity.current.z * safeDelta * 0.05)
+                } else {
+                    // Allow WASD movement even without pointer lock
+                    camera.position.x += -velocity.current.x * safeDelta * 0.05
+                    camera.position.z += -velocity.current.z * safeDelta * 0.05
+                }
             }
         }
 
