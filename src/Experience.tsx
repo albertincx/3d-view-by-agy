@@ -50,6 +50,32 @@ const WallSegment = ({segment}: { segment: any }) => {
     )
 }
 
+const Table = ({table}: { table: any }) => {
+    const {position, width, depth, height, color} = table
+
+    return (
+        <group position={[position[0], height / 2, position[1]]}>
+            {/* Tabletop */}
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
+                <boxGeometry args={[width, 0.05, depth]}/>
+                <meshStandardMaterial color={color || '#8B4513'}/>
+            </mesh>
+            {/* Legs */}
+            {[
+                [width / 2 - 0.03, -height / 2 + 0.025, depth / 2 - 0.03],
+                [-width / 2 + 0.03, -height / 2 + 0.025, depth / 2 - 0.03],
+                [width / 2 - 0.03, -height / 2 + 0.025, -depth / 2 + 0.03],
+                [-width / 2 + 0.03, -height / 2 + 0.025, -depth / 2 + 0.03]
+            ].map((legPos, i) => (
+                <mesh key={i} position={legPos as [number, number, number]} castShadow>
+                    <cylinderGeometry args={[0.02, 0.02, height - 0.05, 8]}/>
+                    <meshStandardMaterial color={color || '#8B4513'}/>
+                </mesh>
+            ))}
+        </group>
+    )
+}
+
 export function Experience({isMobile, config, mobileInput, mobileKeys}: ExperienceProps) {
     const {camera} = useThree()
     const [sub, get] = useKeyboardControls()
@@ -59,8 +85,9 @@ export function Experience({isMobile, config, mobileInput, mobileKeys}: Experien
     const direction = useRef(new THREE.Vector3())
     const lastTime = useRef(performance.now())
 
-    const {rooms, floor} = config || {rooms: [], floor: {color: '#ccc'}}
+    const {rooms, floor, tables} = config || {rooms: [], floor: {color: '#ccc'}, tables: []}
     const safeRooms = rooms || (config.segments ? [{position: [0, 0], segments: config.segments}] : [])
+    const safeTables = tables || []
 
     useFrame(() => {
         const time = performance.now()
@@ -146,6 +173,11 @@ export function Experience({isMobile, config, mobileInput, mobileKeys}: Experien
                             <WallSegment key={i} segment={segment}/>
                         ))}
                     </group>
+                ))}
+
+                {/* Tables */}
+                {safeTables.map((table: any, i: number) => (
+                    <Table key={i} table={table}/>
                 ))}
             </group>
         </>

@@ -18,7 +18,7 @@
             0
           ],
           "thickness": 0.2,
-          "height": 3.0,
+          "height": 2.7,
           "color": "#f0f0f0",
           "holes": []
         },
@@ -29,38 +29,38 @@
           ],
           "end": [
             0,
-            2.0
+            2
           ],
           "thickness": 0.2,
-          "height": 3.0,
+          "height": 2.7,
           "color": "#f0f0f0",
           "holes": []
         },
         {
           "start": [
             0,
-            2.0
+            2
           ],
           "end": [
             0.7,
-            2.0
+            2
           ],
           "thickness": 0.2,
-          "height": 3.0,
+          "height": 2.7,
           "color": "#f0f0f0",
           "holes": []
         },
         {
           "start": [
             1.5,
-            2.0
+            2
           ],
           "end": [
             2.2,
-            2.0
+            2
           ],
           "thickness": 0.2,
-          "height": 3.0,
+          "height": 2.7,
           "color": "#f0f0f0",
           "holes": []
         },
@@ -71,52 +71,52 @@
           ],
           "end": [
             2.2,
-            2.0
+            2
           ],
           "thickness": 0.2,
-          "height": 3.0,
+          "height": 2.7,
           "color": "#f0f0f0",
           "holes": []
         },
         {
           "start": [
             0,
-            2.0
+            2
           ],
           "end": [
             0,
-            5.0
+            5
           ],
           "thickness": 0.2,
-          "height": 3.0,
+          "height": 2.7,
           "color": "#f0f0f0",
           "holes": []
         },
         {
           "start": [
             0,
-            5.0
+            5
           ],
           "end": [
             2.2,
-            5.0
+            5
           ],
           "thickness": 0.2,
-          "height": 3.0,
+          "height": 2.7,
           "color": "#f0f0f0",
           "holes": []
         },
         {
           "start": [
             2.2,
-            2.0
+            2
           ],
           "end": [
             2.2,
             2.5
           ],
           "thickness": 0.2,
-          "height": 3.0,
+          "height": 2.7,
           "color": "#f0f0f0",
           "holes": []
         },
@@ -127,10 +127,10 @@
           ],
           "end": [
             2.2,
-            5.0
+            5
           ],
           "thickness": 0.2,
-          "height": 3.0,
+          "height": 2.7,
           "color": "#f0f0f0",
           "holes": []
         },
@@ -140,39 +140,39 @@
             0
           ],
           "end": [
-            6.0,
+            6,
             0
           ],
           "thickness": 0.2,
-          "height": 3.0,
+          "height": 2.7,
           "color": "#f0f0f0",
           "holes": []
         },
         {
           "start": [
-            6.0,
+            6,
             0
           ],
           "end": [
-            6.0,
-            1.0
+            6,
+            1
           ],
           "thickness": 0.2,
-          "height": 3.0,
+          "height": 2.7,
           "color": "#f0f0f0",
           "holes": []
         },
         {
           "start": [
-            6.0,
+            6,
             2.5
           ],
           "end": [
-            6.0,
+            6,
             4.5
           ],
           "thickness": 0.2,
-          "height": 3.0,
+          "height": 2.7,
           "color": "#f0f0f0",
           "holes": []
         },
@@ -182,53 +182,53 @@
             4.5
           ],
           "end": [
-            6.0,
+            6,
             4.5
           ],
           "thickness": 0.2,
-          "height": 3.0,
+          "height": 2.7,
           "color": "#f0f0f0",
           "holes": []
         },
         {
           "start": [
-            6.0,
-            1.0
+            6,
+            1
           ],
           "end": [
             7.5,
-            1.0
+            1
           ],
           "thickness": 0.2,
-          "height": 3.0,
-          "color": "#f0f0f0",
-          "holes": []
-        },
-        {
-          "start": [
-            7.5,
-            1.0
-          ],
-          "end": [
-            7.5,
-            3.5
-          ],
-          "thickness": 0.2,
-          "height": 3.0,
+          "height": 2.7,
           "color": "#f0f0f0",
           "holes": []
         },
         {
           "start": [
             7.5,
-            3.5
+            1
           ],
           "end": [
-            6.0,
+            7.5,
             3.5
           ],
           "thickness": 0.2,
-          "height": 3.0,
+          "height": 2.7,
+          "color": "#f0f0f0",
+          "holes": []
+        },
+        {
+          "start": [
+            7.5,
+            3.5
+          ],
+          "end": [
+            6,
+            3.5
+          ],
+          "thickness": 0.2,
+          "height": 2.7,
           "color": "#f0f0f0",
           "holes": []
         }
@@ -239,5 +239,19 @@
     "width": 10,
     "depth": 10,
     "color": "#6f72d3"
-  }
+  },
+  "tables": [
+    {
+      "id": "table-1771693026598",
+      "name": "Table 1",
+      "position": [
+        3.7265625,
+        0.7109375
+      ],
+      "width": 1.2,
+      "depth": 0.8,
+      "height": 0.75,
+      "color": "#8B4513"
+    }
+  ]
 }

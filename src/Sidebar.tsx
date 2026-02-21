@@ -13,6 +13,7 @@ export function Sidebar({config, setConfig}: SidebarProps) {
     const [error, setError] = useState<string | null>(null)
     const [expandedRoomId, setExpandedRoomId] = useState<string | null>(null)
     const [expandedSegmentIndex, setExpandedSegmentIndex] = useState<string | null>(null) // format: "roomId-segmentIndex"
+    const [expandedTableId, setExpandedTableId] = useState<string | null>(null)
 
     // Ensure config has rooms (migration for old state)
     useEffect(() => {
@@ -113,6 +114,39 @@ export function Sidebar({config, setConfig}: SidebarProps) {
         e.target.value = '';
     }
 
+    const tables = config.tables || []
+
+    const addTable = () => {
+        const newTable = {
+            id: `table-${Date.now()}`,
+            name: `Table ${tables.length + 1}`,
+            position: [2, 2],
+            width: 1.2,
+            depth: 0.8,
+            height: 0.75,
+            color: '#8B4513'
+        }
+        setConfig({...config, tables: [...tables, newTable]})
+        setExpandedTableId(newTable.id)
+    }
+
+    const updateTablePosition = (tableIndex: number, x: number, z: number) => {
+        const newTables = [...tables]
+        newTables[tableIndex].position = [x, z]
+        setConfig({...config, tables: newTables})
+    }
+
+    const updateTable = (tableIndex: number, field: string, value: any) => {
+        const newTables = [...tables]
+        newTables[tableIndex][field] = value
+        setConfig({...config, tables: newTables})
+    }
+
+    const deleteTable = (tableIndex: number) => {
+        const newTables = tables.filter((_: any, i: number) => i !== tableIndex)
+        setConfig({...config, tables: newTables})
+    }
+
     if (!isOpen) {
         return (
             <button
@@ -126,7 +160,7 @@ export function Sidebar({config, setConfig}: SidebarProps) {
 
     return (
         <div
-            className="absolute top-0 right-0 h-full w-96 bg-gray-900 border-l border-gray-700 z-50 flex flex-col shadow-xl overflow-hidden"
+            className="absolute top-0 right-0 h-full w-96 bg-gray-900 border-l border-gray-700 z-50 flex flex-col shadow-xl"
             onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => e.stopPropagation()}
             onKeyDown={(e) => e.stopPropagation()}
@@ -185,7 +219,7 @@ export function Sidebar({config, setConfig}: SidebarProps) {
                         )}
                     </div>
                 ) : (
-                    <div className="p-4 space-y-6">
+                    <div className="p-4 space-y-6 overflow-y-auto flex-1">
                         {/* Global Settings */}
                         <div className="space-y-4">
                             <h3 className="text-xs uppercase font-bold text-gray-500 tracking-wider">Global
@@ -314,6 +348,95 @@ export function Sidebar({config, setConfig}: SidebarProps) {
                                     )}
                                 </div>
                             ))}
+                        </div>
+
+                        {/* Tables List */}
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-center">
+                                <h3 className="text-xs uppercase font-bold text-gray-500 tracking-wider">Tables
+                                    ({tables.length})</h3>
+                                <button
+                                    onClick={addTable}
+                                    className="text-xs bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded font-bold"
+                                >
+                                    + Add
+                                </button>
+                            </div>
+                            {tables.map((table: any, tableIndex: number) => {
+                                const isExpanded = expandedTableId === table.id
+                                return (
+                                    <div key={table.id || tableIndex}
+                                         className="bg-gray-800 rounded border border-gray-700 overflow-hidden">
+                                        <button
+                                            className="w-full p-3 flex justify-between items-center text-left bg-gray-800 hover:bg-gray-750 border-b border-gray-700"
+                                            onClick={() => setExpandedTableId(isExpanded ? null : table.id)}
+                                        >
+                                            <span
+                                                className="text-sm font-bold text-gray-200">{table.name || `Table ${tableIndex + 1}`}</span>
+                                            <div className="flex items-center gap-2">
+                                                <span
+                                                    className="text-gray-500 text-xs">{isExpanded ? '▲' : '▼'}</span>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        deleteTable(tableIndex)
+                                                    }}
+                                                    className="text-red-400 hover:text-red-300 text-xs"
+                                                >
+                                                    ✕
+                                                </button>
+                                            </div>
+                                        </button>
+
+                                        {isExpanded && (
+                                            <div className="p-3 bg-gray-900/30 space-y-4">
+                                                {/* Joystick Control */}
+                                                <div className="flex justify-center py-2 border-b border-gray-700 mb-2">
+                                                    <Joystick
+                                                        x={table.position[0]}
+                                                        z={table.position[1]}
+                                                        onChange={(x, z) => updateTablePosition(tableIndex, x, z)}
+                                                    />
+                                                </div>
+
+                                                {/* Table properties */}
+                                                <div className="space-y-3">
+                                                    <div className="flex justify-between items-center">
+                                                        <label className="text-[10px] text-gray-500">Color</label>
+                                                        <input
+                                                            type="color"
+                                                            value={table.color || '#8B4513'}
+                                                            onChange={(e) => updateTable(tableIndex, 'color', e.target.value)}
+                                                            className="bg-transparent border-none w-6 h-6 cursor-pointer"
+                                                        />
+                                                    </div>
+
+                                                    {['Width', 'Depth', 'Height'].map((label) => {
+                                                        const field = label.toLowerCase() as 'width' | 'depth' | 'height'
+                                                        const val = table[field]
+                                                        return (
+                                                            <div key={label}>
+                                                                <div className="flex justify-between mb-1">
+                                                                    <label
+                                                                        className="text-[10px] text-gray-500">{label}</label>
+                                                                    <span
+                                                                        className="text-[10px] text-gray-400">{val.toFixed(2)}m</span>
+                                                                </div>
+                                                                <input
+                                                                    type="range" min="0.3" max="3" step="0.05"
+                                                                    value={val}
+                                                                    onChange={(e) => updateTable(tableIndex, field, parseFloat(e.target.value))}
+                                                                    className="w-full"
+                                                                />
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )
+                            })}
                         </div>
                     </div>
                 )}
