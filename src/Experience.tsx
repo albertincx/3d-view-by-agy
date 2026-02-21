@@ -94,48 +94,41 @@ export function Experience({isMobile, config, mobileInput, mobileKeys}: Experien
         const delta = (time - lastTime.current) / 1000
         const safeDelta = Math.min(delta, 0.1)
 
-        let forward = 0, backward = 0, left = 0, right = 0, run = 1
-
         if (isMobile) {
             // Use mobile controls (joystick + WASD buttons)
-            forward = mobileKeys.forward || (mobileInput.y > 0 ? 1 : 0)
-            backward = mobileKeys.backward || (mobileInput.y < 0 ? 1 : 0)
-            left = mobileKeys.left || (mobileInput.x < 0 ? 1 : 0)
-            right = mobileKeys.right || (mobileInput.x > 0 ? 1 : 0)
+            const forward = mobileKeys.forward || (mobileInput.y > 0 ? 1 : 0)
+            const backward = mobileKeys.backward || (mobileInput.y < 0 ? 1 : 0)
+            const left = mobileKeys.left || (mobileInput.x < 0 ? 1 : 0)
+            const right = mobileKeys.right || (mobileInput.x > 0 ? 1 : 0)
 
             // Calculate movement direction from joystick
             const moveX = mobileInput.x * Math.abs(mobileInput.y) + (mobileKeys.right - mobileKeys.left)
             const moveZ = mobileInput.y + (mobileKeys.forward - mobileKeys.backward)
 
-            velocity.current.x = moveX * 5 * safeDelta
-            velocity.current.z = moveZ * 5 * safeDelta
+            camera.position.x += moveX * 0.1
+            camera.position.z += moveZ * 0.1
         } else {
-            // Use keyboard controls
-            const {forward: kf, backward: kb, left: kl, right: kr, run: krun} = get()
-            forward = Number(kf)
-            backward = Number(kb)
-            left = Number(kl)
-            right = Number(kr)
-            run = Number(krun)
-
+            // Use keyboard controls (WASD)
+            const {forward, backward, left, right, run} = get()
+            
             velocity.current.x -= velocity.current.x * 10.0 * safeDelta
             velocity.current.z -= velocity.current.z * 10.0 * safeDelta
 
-            direction.current.z = forward - backward
-            direction.current.x = right - left
+            direction.current.z = Number(forward) - Number(backward)
+            direction.current.x = Number(right) - Number(left)
             direction.current.normalize()
 
             if (forward || backward) velocity.current.z -= direction.current.z * 400.0 * safeDelta * (run ? 2 : 1)
             if (left || right) velocity.current.x -= direction.current.x * 400.0 * safeDelta * (run ? 2 : 1)
-        }
 
-        if (!isMobile && controlsRef.current?.isLocked) {
-            controlsRef.current.moveRight(-velocity.current.x * safeDelta * 0.05)
-            controlsRef.current.moveForward(-velocity.current.z * safeDelta * 0.05)
-        } else if (isMobile) {
-            // Apply mobile movement to OrbitControls target
-            camera.position.x += velocity.current.x
-            camera.position.z += velocity.current.z
+            if (controlsRef.current?.isLocked) {
+                controlsRef.current.moveRight(-velocity.current.x * safeDelta * 0.05)
+                controlsRef.current.moveForward(-velocity.current.z * safeDelta * 0.05)
+            } else {
+                // Allow WASD movement even without pointer lock
+                camera.position.x += -velocity.current.x * safeDelta * 0.05
+                camera.position.z += -velocity.current.z * safeDelta * 0.05
+            }
         }
 
         lastTime.current = time

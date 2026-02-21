@@ -150,7 +150,11 @@ export function Sidebar({config, setConfig}: SidebarProps) {
     if (!isOpen) {
         return (
             <button
-                onClick={() => setIsOpen(true)}
+                onClick={(e) => {
+                    e.stopPropagation()
+                    setIsOpen(true)
+                }}
+                onPointerDown={(e) => e.stopPropagation()}
                 className="absolute top-4 right-4 z-50 bg-black/50 text-white p-2 rounded hover:bg-black/70"
             >
                 Edit Room
@@ -163,26 +167,33 @@ export function Sidebar({config, setConfig}: SidebarProps) {
             className="absolute top-0 right-0 h-full w-96 bg-gray-900 border-l border-gray-700 z-50 flex flex-col shadow-xl"
             onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => e.stopPropagation()}
         >
             <div className="flex justify-between items-center p-4 border-b border-gray-700 bg-gray-800">
                 <h2 className="text-white font-bold">Room Editor</h2>
                 <div className="flex gap-2">
                     <label
+                        onClick={(e) => e.stopPropagation()}
                         className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 rounded text-white cursor-pointer">
                         Import
                         <input
                             type="file"
                             accept=".json"
                             onChange={importJson}
+                            onClick={(e) => e.stopPropagation()}
                             className="hidden"
                         />
                     </label>
-                    <button onClick={exportJson}
+                    <button onClick={(e) => {
+                        e.stopPropagation()
+                        exportJson()
+                    }}
                             className="bg-blue-600 hover:bg-blue-700 text-xs px-2 py-1 rounded text-white">
                         Export
                     </button>
-                    <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-white">
+                    <button onClick={(e) => {
+                        e.stopPropagation()
+                        setIsOpen(false)
+                    }} className="text-gray-400 hover:text-white">
                         ✕
                     </button>
                 </div>
@@ -191,13 +202,19 @@ export function Sidebar({config, setConfig}: SidebarProps) {
             <div className="flex border-b border-gray-700">
                 <button
                     className={`flex-1 p-2 text-sm ${activeTab === 'ui' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800'}`}
-                    onClick={() => setActiveTab('ui')}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        setActiveTab('ui')
+                    }}
                 >
                     Controls
                 </button>
                 <button
                     className={`flex-1 p-2 text-sm ${activeTab === 'json' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800'}`}
-                    onClick={() => setActiveTab('json')}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        setActiveTab('json')
+                    }}
                 >
                     Raw JSON
                 </button>
@@ -234,7 +251,10 @@ export function Sidebar({config, setConfig}: SidebarProps) {
                                 />
                             </div>
                             <button
-                                onClick={addRoom}
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    addRoom()
+                                }}
                                 className="w-full bg-green-600 hover:bg-green-700 text-white text-xs py-2 rounded font-bold"
                             >
                                 + Add Room
@@ -250,7 +270,10 @@ export function Sidebar({config, setConfig}: SidebarProps) {
                                      className="bg-gray-800 rounded border border-gray-700 overflow-hidden">
                                     <button
                                         className="w-full p-3 flex justify-between items-center text-left bg-gray-800 hover:bg-gray-750 border-b border-gray-700"
-                                        onClick={() => setExpandedRoomId(expandedRoomId === room.id ? null : room.id)}
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            setExpandedRoomId(expandedRoomId === room.id ? null : room.id)
+                                        }}
                                     >
                                         <span
                                             className="text-sm font-bold text-gray-200">{room.name || `Room ${roomIndex + 1}`}</span>
@@ -279,7 +302,10 @@ export function Sidebar({config, setConfig}: SidebarProps) {
                                                          className="bg-gray-800 rounded border border-gray-700 overflow-hidden">
                                                         <button
                                                             className="w-full p-2 flex justify-between items-center text-left bg-gray-800 hover:bg-gray-750"
-                                                            onClick={() => setExpandedSegmentIndex(isExpanded ? null : segmentId)}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                                setExpandedSegmentIndex(isExpanded ? null : segmentId)
+                                                            }}
                                                         >
                                                             <div className="flex items-center gap-2">
                                                                 <span
@@ -356,7 +382,10 @@ export function Sidebar({config, setConfig}: SidebarProps) {
                                 <h3 className="text-xs uppercase font-bold text-gray-500 tracking-wider">Tables
                                     ({tables.length})</h3>
                                 <button
-                                    onClick={addTable}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        addTable()
+                                    }}
                                     className="text-xs bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded font-bold"
                                 >
                                     + Add
@@ -369,7 +398,10 @@ export function Sidebar({config, setConfig}: SidebarProps) {
                                          className="bg-gray-800 rounded border border-gray-700 overflow-hidden">
                                         <button
                                             className="w-full p-3 flex justify-between items-center text-left bg-gray-800 hover:bg-gray-750 border-b border-gray-700"
-                                            onClick={() => setExpandedTableId(isExpanded ? null : table.id)}
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                setExpandedTableId(isExpanded ? null : table.id)
+                                            }}
                                         >
                                             <span
                                                 className="text-sm font-bold text-gray-200">{table.name || `Table ${tableIndex + 1}`}</span>

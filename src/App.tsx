@@ -148,6 +148,7 @@ export default function App() {
     const [config, setConfig] = useState(initialRoomConfig)
     const [mobileInput, setMobileInput] = useState({x: 0, y: 0})
     const [mobileKeys, setMobileKeys] = useState({forward: 0, backward: 0, left: 0, right: 0})
+    const canvasRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         const checkMobile = () => {
@@ -157,6 +158,13 @@ export default function App() {
         window.addEventListener('resize', checkMobile)
         return () => window.removeEventListener('resize', checkMobile)
     }, [])
+
+    useEffect(() => {
+        // Focus canvas for keyboard controls
+        if (canvasRef.current && !isMobile) {
+            canvasRef.current.focus()
+        }
+    }, [isMobile])
 
     const keyboardMap = [
         {name: 'forward', keys: ['ArrowUp', 'w', 'W']},
@@ -180,19 +188,21 @@ export default function App() {
 
             <Sidebar config={config} setConfig={setConfig}/>
 
-            <Canvas shadows camera={{position: [0, 2, 5], fov: 50}}>
-                <color attach="background" args={['#171717']}/>
-                <KeyboardControls map={keyboardMap}>
-                    <Suspense fallback={null}>
-                        <Experience
-                            isMobile={isMobile}
-                            config={config}
-                            mobileInput={mobileInput}
-                            mobileKeys={mobileKeys}
-                        />
-                    </Suspense>
-                </KeyboardControls>
-            </Canvas>
+            <div ref={canvasRef} className="flex-1" tabIndex={-1}>
+                <Canvas shadows camera={{position: [0, 2, 5], fov: 50}} tabIndex={1} style={{outline: 'none'}} autoFocus>
+                    <color attach="background" args={['#171717']}/>
+                    <KeyboardControls map={keyboardMap}>
+                        <Suspense fallback={null}>
+                            <Experience
+                                isMobile={isMobile}
+                                config={config}
+                                mobileInput={mobileInput}
+                                mobileKeys={mobileKeys}
+                            />
+                        </Suspense>
+                    </KeyboardControls>
+                </Canvas>
+            </div>
 
             {/* Mobile controls */}
             {isMobile && (
