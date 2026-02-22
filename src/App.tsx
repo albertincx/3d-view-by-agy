@@ -68,7 +68,8 @@ function Joystick({onMove}: { onMove: (x: number, y: number) => void }) {
     return (
         <div
             ref={joystickRef}
-            className="absolute bottom-8 left-8 w-28 h-28 bg-white/20 rounded-full backdrop-blur-sm touch-none"
+            className="absolute left-8 w-28 h-28 bg-white/20 rounded-full backdrop-blur-sm touch-none"
+            style={{ bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))' }}
             onTouchStart={(e) => handleStart(e.touches[0].clientX, e.touches[0].clientY)}
         >
             <div
@@ -105,7 +106,7 @@ function MobileWASD({
     const buttonClass = "w-14 h-14 bg-white/30 backdrop-blur-sm rounded-lg flex items-center justify-center text-white font-bold text-xl active:bg-white/50 select-none touch-none"
 
     return (
-        <div className="absolute bottom-8 right-8 flex flex-col gap-2">
+        <div className="absolute right-8 flex flex-col gap-2" style={{ bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))' }}>
             <div className="flex justify-center">
                 <button
                     className={buttonClass}

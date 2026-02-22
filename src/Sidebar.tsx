@@ -409,7 +409,7 @@ export function Sidebar({config, setConfig, isOpen, setIsOpen}: SidebarProps) {
                                             <div className="flex items-center gap-2">
                                                 <span
                                                     className="text-gray-500 text-xs">{isExpanded ? '▲' : '▼'}</span>
-                                                <button
+                                                <div
                                                     onClick={(e) => {
                                                         e.stopPropagation()
                                                         deleteTable(tableIndex)
@@ -417,7 +417,7 @@ export function Sidebar({config, setConfig, isOpen, setIsOpen}: SidebarProps) {
                                                     className="text-red-400 hover:text-red-300 text-xs"
                                                 >
                                                     ✕
-                                                </button>
+                                                </div>
                                             </div>
                                         </button>
 
