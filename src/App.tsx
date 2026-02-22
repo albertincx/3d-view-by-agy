@@ -147,7 +147,7 @@ export default function App() {
     const [config, setConfig] = useState(initialRoomConfig)
     const [mobileInput, setMobileInput] = useState({x: 0, y: 0})
     const [mobileKeys, setMobileKeys] = useState({forward: 0, backward: 0, left: 0, right: 0})
-    const [sidebarOpen, setSidebarOpen] = useState(true)
+    const [sidebarOpen, setSidebarOpen] = useState(false)
     const canvasRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
