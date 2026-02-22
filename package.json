@@ -25,5 +25,11 @@
     "@types/react-dom": "^19.2.3",
     "typescript": "^5.5.3"
   },
+  "contributors": [
+    {
+      "name": "Antigravity",
+      "url": "https://github.com/google-deepmind"
+    }
+  ],
   "private": true
 }
