@@ -115,6 +115,68 @@ export function Sidebar({config, setConfig, isOpen, setIsOpen}: SidebarProps) {
         e.target.value = '';
     }
 
+    const addApartment = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const newConfig = JSON.parse(event.target?.result as string);
+
+                // Calculate max X of current rooms to place new ones "nearby"
+                let maxX = 0;
+                rooms.forEach((room: any) => {
+                    room.segments.forEach((seg: any) => {
+                        maxX = Math.max(maxX, seg.start[0] + room.position[0], seg.end[0] + room.position[0]);
+                    });
+                });
+
+                const offset = maxX + 5; // 5m gap
+                const batchId = `batch-${Date.now()}`;
+
+                // Offset and merge rooms
+                const newRooms = (newConfig.rooms || []).map((room: any) => ({
+                    ...room,
+                    id: `${room.id}-${Date.now()}`,
+                    position: [room.position[0] + offset, room.position[1]],
+                    batchId
+                }));
+
+                // Offset and merge tables
+                const newTables = (newConfig.tables || []).map((table: any) => ({
+                    ...table,
+                    id: `${table.id}-${Date.now()}`,
+                    position: [table.position[0] + offset, table.position[1]],
+                    batchId
+                }));
+
+                setConfig({
+                    ...config,
+                    rooms: [...rooms, ...newRooms],
+                    tables: [...(config.tables || []), ...newTables]
+                });
+                setError(null);
+            } catch (err: any) {
+                setError(err.message);
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+    }
+
+    const removeLastApartment = () => {
+        const batchIds = rooms.map((r: any) => r.batchId).filter(Boolean);
+        if (batchIds.length === 0) return;
+
+        const lastBatchId = batchIds[batchIds.length - 1];
+
+        setConfig({
+            ...config,
+            rooms: rooms.filter((r: any) => r.batchId !== lastBatchId),
+            tables: tables.filter((t: any) => t.batchId !== lastBatchId)
+        });
+    }
+
     const tables = config.tables || []
 
     const addTable = () => {
@@ -184,6 +246,18 @@ export function Sidebar({config, setConfig, isOpen, setIsOpen}: SidebarProps) {
                             className="hidden"
                         />
                     </label>
+                    <label
+                        onClick={(e) => e.stopPropagation()}
+                        className="bg-purple-600 hover:bg-purple-700 text-xs px-2 py-1 rounded text-white cursor-pointer whitespace-nowrap">
+                        Add Apartment
+                        <input
+                            type="file"
+                            accept=".json"
+                            onChange={addApartment}
+                            onClick={(e) => e.stopPropagation()}
+                            className="hidden"
+                        />
+                    </label>
                     <button onClick={(e) => {
                         e.stopPropagation()
                         exportJson()
@@ -199,7 +273,16 @@ export function Sidebar({config, setConfig, isOpen, setIsOpen}: SidebarProps) {
                     </button>
                 </div>
             </div>
-
+            {rooms.some((r: any) => r.batchId) && (
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        removeLastApartment()
+                    }}
+                    className="bg-red-600 hover:bg-red-700 mb-2 m-2 text-xs px-2 py-1 rounded text-white whitespace-nowrap">
+                    Remove second Apt
+                </button>
+            )}
             <div className="flex border-b border-gray-700">
                 <button
                     className={`flex-1 p-2 text-sm ${activeTab === 'ui' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-800'}`}

@@ -1,7 +1,7 @@
 {
   "rooms": [
     {
-      "id": "room-1",
+      "id": "main-room",
       "name": "Main Apartment",
       "position": [
         0,
@@ -14,244 +14,186 @@
             0
           ],
           "end": [
-            2.2,
+            10,
             0
           ],
           "thickness": 0.2,
-          "height": 2.7,
-          "color": "#f0f0f0",
-          "holes": []
+          "height": 3.0,
+          "color": "#f0f0f0"
+        },
+        {
+          "start": [
+            10,
+            0
+          ],
+          "end": [
+            10,
+            4.5
+          ],
+          "thickness": 0.2,
+          "height": 3.0,
+          "color": "#f0f0f0"
+        },
+        {
+          "start": [
+            10,
+            4.5
+          ],
+          "end": [
+            0,
+            4.5
+          ],
+          "thickness": 0.2,
+          "height": 3.0,
+          "color": "#f0f0f0"
         },
         {
           "start": [
             0,
-            0
+            4.5
           ],
           "end": [
             0,
-            2
-          ],
-          "thickness": 0.2,
-          "height": 2.7,
-          "color": "#f0f0f0",
-          "holes": []
-        },
-        {
-          "start": [
-            0,
-            2
-          ],
-          "end": [
-            0.7,
-            2
-          ],
-          "thickness": 0.2,
-          "height": 2.7,
-          "color": "#f0f0f0",
-          "holes": []
-        },
-        {
-          "start": [
-            1.5,
-            2
-          ],
-          "end": [
-            2.2,
-            2
-          ],
-          "thickness": 0.2,
-          "height": 2.7,
-          "color": "#f0f0f0",
-          "holes": []
-        },
-        {
-          "start": [
-            2.2,
-            0
-          ],
-          "end": [
-            2.2,
-            2
-          ],
-          "thickness": 0.2,
-          "height": 2.7,
-          "color": "#f0f0f0",
-          "holes": []
-        },
-        {
-          "start": [
-            0,
-            2
-          ],
-          "end": [
-            0,
-            5
-          ],
-          "thickness": 0.2,
-          "height": 2.7,
-          "color": "#f0f0f0",
-          "holes": []
-        },
-        {
-          "start": [
-            0,
-            5
-          ],
-          "end": [
-            2.2,
-            5
-          ],
-          "thickness": 0.2,
-          "height": 2.7,
-          "color": "#f0f0f0",
-          "holes": []
-        },
-        {
-          "start": [
-            2.2,
-            2
-          ],
-          "end": [
-            2.2,
-            2.5
-          ],
-          "thickness": 0.2,
-          "height": 2.7,
-          "color": "#f0f0f0",
-          "holes": []
-        },
-        {
-          "start": [
-            2.2,
-            3.5
-          ],
-          "end": [
-            2.2,
-            5
-          ],
-          "thickness": 0.2,
-          "height": 2.7,
-          "color": "#f0f0f0",
-          "holes": []
-        },
-        {
-          "start": [
-            2.2,
-            0
-          ],
-          "end": [
-            6,
-            0
-          ],
-          "thickness": 0.2,
-          "height": 2.7,
-          "color": "#f0f0f0",
-          "holes": []
-        },
-        {
-          "start": [
-            6,
-            0
-          ],
-          "end": [
-            6,
             1
           ],
           "thickness": 0.2,
-          "height": 2.7,
-          "color": "#f0f0f0",
-          "holes": []
+          "height": 3.0,
+          "color": "#f0f0f0"
         },
         {
           "start": [
-            6,
+            0,
+            0
+          ],
+          "end": [
+            0,
+            0.5
+          ],
+          "thickness": 0.2,
+          "height": 3.0,
+          "color": "#f0f0f0"
+        },
+        {
+          "start": [
+            2.5,
+            0
+          ],
+          "end": [
+            2.5,
+            1
+          ],
+          "thickness": 0.2,
+          "height": 3.0,
+          "color": "#f0f0f0"
+        },
+        {
+          "start": [
+            2.5,
+            3.5
+          ],
+          "end": [
+            2.5,
+            4.5
+          ],
+          "thickness": 0.2,
+          "height": 3.0,
+          "color": "#f0f0f0"
+        },
+        {
+          "start": [
+            6.5,
             2.5
           ],
           "end": [
-            6,
+            10,
+            2.5
+          ],
+          "thickness": 0.15,
+          "height": 3.0,
+          "color": "#f0f0f0"
+        },
+        {
+          "start": [
+            6.5,
+            2.5
+          ],
+          "end": [
+            6.5,
             4.5
           ],
-          "thickness": 0.2,
-          "height": 2.7,
-          "color": "#f0f0f0",
-          "holes": []
+          "thickness": 0.15,
+          "height": 3.0,
+          "color": "#f0f0f0"
         },
         {
           "start": [
-            2.2,
+            7.5,
+            2.5
+          ],
+          "end": [
+            7.5,
             4.5
           ],
-          "end": [
-            6,
-            4.5
-          ],
-          "thickness": 0.2,
-          "height": 2.7,
-          "color": "#f0f0f0",
-          "holes": []
-        },
-        {
-          "start": [
-            6,
-            1
-          ],
-          "end": [
-            7.5,
-            1
-          ],
-          "thickness": 0.2,
-          "height": 2.7,
-          "color": "#f0f0f0",
-          "holes": []
-        },
-        {
-          "start": [
-            7.5,
-            1
-          ],
-          "end": [
-            7.5,
-            3.5
-          ],
-          "thickness": 0.2,
-          "height": 2.7,
-          "color": "#f0f0f0",
-          "holes": []
-        },
-        {
-          "start": [
-            7.5,
-            3.5
-          ],
-          "end": [
-            6,
-            3.5
-          ],
-          "thickness": 0.2,
-          "height": 2.7,
-          "color": "#f0f0f0",
-          "holes": []
+          "thickness": 0.15,
+          "height": 3.0,
+          "color": "#f0f0f0"
         }
       ]
     }
   ],
   "floor": {
-    "width": 10,
-    "depth": 10,
-    "color": "#6f72d3"
+    "width": 12,
+    "depth": 8,
+    "color": "#e0e0e0"
   },
   "tables": [
     {
-      "id": "table-1771693026598",
-      "name": "Table 1",
+      "id": "desk",
+      "name": "Desk",
       "position": [
-        3.7265625,
-        0.7109375
+        4.25,
+        0.4
       ],
-      "width": 0.75,
-      "depth": 0.8,
+      "width": 1.5,
+      "depth": 0.6,
       "height": 0.75,
-      "color": "#8B4513"
+      "color": "#5D4037"
+    },
+    {
+      "id": "bed",
+      "name": "Bed",
+      "position": [
+        4.5,
+        3.0
+      ],
+      "width": 1.8,
+      "depth": 2.2,
+      "height": 0.5,
+      "color": "#607D8B"
+    },
+    {
+      "id": "kitchen-counter-1",
+      "name": "Kitchen Counter",
+      "position": [
+        8.25,
+        0.3
+      ],
+      "width": 3.5,
+      "depth": 0.6,
+      "height": 0.9,
+      "color": "#FFFFFF"
+    },
+    {
+      "id": "bathroom-vanity",
+      "name": "Vanity",
+      "position": [
+        9.6,
+        3.5
+      ],
+      "width": 0.8,
+      "depth": 1.8,
+      "height": 0.9,
+      "color": "#FFFFFF"
     }
   ]
 }

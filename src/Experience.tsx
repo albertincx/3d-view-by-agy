@@ -81,6 +81,7 @@ export function Experience({isMobile, config, mobileInput, mobileKeys, sidebarOp
     const {camera} = useThree()
     const [sub, get] = useKeyboardControls()
     const controlsRef = useRef<any>(null)
+    const sceneRef = useRef<THREE.Group>(null)
 
     const velocity = useRef(new THREE.Vector3())
     const direction = useRef(new THREE.Vector3())
@@ -96,6 +97,10 @@ export function Experience({isMobile, config, mobileInput, mobileKeys, sidebarOp
         const safeDelta = Math.min(delta, 0.1)
 
         if (isMobile) {
+            if (sceneRef.current) {
+                sceneRef.current.position.x -= (mobileKeys.right - mobileKeys.left) * 0.1
+                sceneRef.current.position.y -= (mobileKeys.forward - mobileKeys.backward) * 0.1
+            }
             // Use mobile controls (joystick + WASD buttons)
             const forward = mobileKeys.forward || (mobileInput.y > 0 ? 1 : 0)
             const backward = mobileKeys.backward || (mobileInput.y < 0 ? 1 : 0)
@@ -103,11 +108,14 @@ export function Experience({isMobile, config, mobileInput, mobileKeys, sidebarOp
             const right = mobileKeys.right || (mobileInput.x > 0 ? 1 : 0)
 
             // Calculate movement direction from joystick
-            const moveX = mobileInput.x * Math.abs(mobileInput.y) + (mobileKeys.right - mobileKeys.left)
-            const moveZ = mobileInput.y + (mobileKeys.forward - mobileKeys.backward)
+            // const moveX = mobileInput.x * Math.abs(mobileInput.y) + (mobileKeys.right - mobileKeys.left)
+            // const moveZ = mobileInput.y + (mobileKeys.forward - mobileKeys.backward)
 
-            camera.position.x += moveX * 0.1
-            camera.position.z += moveZ * 0.1
+            // camera.position.x += moveX * 0.1
+            // camera.position.z += moveZ * 0.1
+            // Joystick moves the CAMERA on X and Z axis (walking)
+            camera.position.x += mobileInput.x * 0.1
+            camera.position.z += mobileInput.y * 0.1
         } else {
             // Use keyboard controls (WASD) - disabled when sidebar is open
             if (!sidebarOpen) {
@@ -153,7 +161,7 @@ export function Experience({isMobile, config, mobileInput, mobileKeys, sidebarOp
             <ambientLight intensity={0.5}/>
             <directionalLight position={[10, 10, 5]} intensity={1} castShadow/>
 
-            <group>
+            <group ref={sceneRef}>
                 {/* Floor */}
                 <mesh rotation={[-Math.PI / 2, 0, 0]} position={[5, -0.01, 5]} receiveShadow>
                     <planeGeometry args={[40, 40]}/>

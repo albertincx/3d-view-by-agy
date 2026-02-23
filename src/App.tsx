@@ -4,6 +4,7 @@ import {KeyboardControls} from '@react-three/drei'
 import {Experience} from './Experience'
 import {Sidebar} from './Sidebar'
 import initialRoomConfig from './room.json'
+import initialRoomConfig2 from './room_b.json'
 
 // Virtual joystick for mobile
 function Joystick({onMove}: { onMove: (x: number, y: number) => void }) {
@@ -69,7 +70,7 @@ function Joystick({onMove}: { onMove: (x: number, y: number) => void }) {
         <div
             ref={joystickRef}
             className="absolute left-8 w-28 h-28 bg-white/20 rounded-full backdrop-blur-sm touch-none"
-            style={{ bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))' }}
+            style={{bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))'}}
             onTouchStart={(e) => handleStart(e.touches[0].clientX, e.touches[0].clientY)}
         >
             <div
@@ -106,7 +107,8 @@ function MobileWASD({
     const buttonClass = "w-14 h-14 bg-white/30 backdrop-blur-sm rounded-lg flex items-center justify-center text-white font-bold text-xl active:bg-white/50 select-none touch-none"
 
     return (
-        <div className="absolute right-8 flex flex-col gap-2" style={{ bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))' }}>
+        <div className="absolute right-8 flex flex-col gap-2"
+             style={{bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))'}}>
             <div className="flex justify-center">
                 <button
                     className={buttonClass}
@@ -145,7 +147,41 @@ function MobileWASD({
 
 export default function App() {
     const [isMobile, setIsMobile] = useState(false)
-    const [config, setConfig] = useState(initialRoomConfig)
+    const mergedInitialConfig = (() => {
+        const config1 = initialRoomConfig as any
+        const config2 = initialRoomConfig2 as any
+
+        let maxX = 0
+        config1.rooms.forEach((room: any) => {
+            room.segments.forEach((seg: any) => {
+                maxX = Math.max(maxX, seg.start[0] + room.position[0], seg.end[0] + room.position[0])
+            })
+        })
+        const offset = maxX + 5
+        const batchId = `batch-initial-b`
+
+        const shiftedRooms2 = (config2.rooms || []).map((room: any) => ({
+            ...room,
+            id: `${room.id}-b`,
+            position: [room.position[0] + offset, room.position[1]],
+            batchId
+        }))
+
+        const shiftedTables2 = (config2.tables || []).map((table: any) => ({
+            ...table,
+            id: `${table.id}-b`,
+            position: [table.position[0] + offset, table.position[1]],
+            batchId
+        }))
+
+        return {
+            ...config1,
+            rooms: [...config1.rooms, ...shiftedRooms2],
+            tables: [...(config1.tables || []), ...shiftedTables2]
+        }
+    })()
+
+    const [config, setConfig] = useState(mergedInitialConfig)
     const [mobileInput, setMobileInput] = useState({x: 0, y: 0})
     const [mobileKeys, setMobileKeys] = useState({forward: 0, backward: 0, left: 0, right: 0})
     const [sidebarOpen, setSidebarOpen] = useState(false)
